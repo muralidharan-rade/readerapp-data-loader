@@ -39,15 +39,9 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-	    	<groupId>io.stargate.grpc</groupId>
-	    	<artifactId>grpc-proto</artifactId>
-	    	<version>1.0.41</version>
-	  	</dependency>
-	  	<dependency>
-		    <groupId>io.grpc</groupId>
-		    <artifactId>grpc-netty-shaded</artifactId>
-	    	<version>1.41.0</version>
-	  	</dependency>
+		  <groupId>com.google.code.gson</groupId>
+		  <artifactId>gson</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
