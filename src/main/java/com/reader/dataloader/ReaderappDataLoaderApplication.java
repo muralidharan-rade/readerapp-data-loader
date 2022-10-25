@@ -71,23 +71,24 @@ public class ReaderappDataLoaderApplication {
 					JsonObject bookJsonObj = JsonParser.parseString(bookString).getAsJsonObject();
 
 					Book book = new Book();
-					book.setName(bookJsonObj.get("title").toString());
-					book.setId(bookJsonObj.get("key").toString().replace("/works/", ""));
+					book.setName(bookJsonObj.get("title").getAsString());
+					book.setId(bookJsonObj.get("key").getAsString().replace("/works/", ""));
 
-					String desc = Optional.ofNullable(bookJsonObj.get("description")).map(JsonElement::getAsString)
+					String desc = Optional.ofNullable(bookJsonObj.get("description")).map(JsonElement::toString)
 							.orElse(null);
 
 					Optional.ofNullable(desc).map(x -> JsonParser.parseString(x).getAsJsonObject())
 							.ifPresent(x -> Optional.ofNullable(x.get("value"))
-									.ifPresent(xy -> book.setDescription(xy.toString())));
+									.ifPresent(xy -> book.setDescription(xy.getAsString())));
 
 					Optional.ofNullable(bookJsonObj.get("created")).map(JsonElement::getAsJsonObject)
 							.ifPresent(x -> Optional.ofNullable(x.get("value")).ifPresent(xy -> book.setPublishedDate(
 									LocalDate.parse(xy.getAsString().subSequence(0, xy.getAsString().indexOf("T"))))));
 
 					List<String> coverIds = new ArrayList<String>();
-					String cov = Optional.ofNullable(bookJsonObj.get("covers")).map(JsonElement::toString).orElse(null);
-					Optional.ofNullable(cov)
+					String covers = Optional.ofNullable(bookJsonObj.get("covers")).map(JsonElement::toString)
+							.orElse(null);
+					Optional.ofNullable(covers)
 							.ifPresent(x -> Optional.ofNullable(JsonParser.parseString(x).getAsJsonArray())
 									.ifPresent(xy -> xy.forEach(z -> coverIds.add(z.getAsString()))));
 					book.setCoverIds(coverIds);
@@ -99,7 +100,7 @@ public class ReaderappDataLoaderApplication {
 							.ifPresent(x -> Optional.ofNullable(JsonParser.parseString(x).getAsJsonArray())
 									.ifPresent(xy -> xy.forEach(z -> authorIds.add(JsonParser
 											.parseString(z.getAsJsonObject().get("author").toString()).getAsJsonObject()
-											.get("key").toString().replace("/authors/", "")))));
+											.get("key").getAsString().replace("/authors/", "")))));
 					book.setAuthorIds(authorIds);
 
 					List<String> authorNames = new ArrayList<String>();
@@ -130,10 +131,10 @@ public class ReaderappDataLoaderApplication {
 					JsonObject authorJsonObj = JsonParser.parseString(authorString).getAsJsonObject();
 
 					Author author = new Author();
-					author.setId(authorJsonObj.get("key").toString().replace("/authors/", ""));
-					author.setName(authorJsonObj.get("name").toString());
+					author.setId(authorJsonObj.get("key").getAsString().replace("/authors/", ""));
+					author.setName(authorJsonObj.get("name").getAsString());
 					author.setPersonalName(Optional.ofNullable(authorJsonObj.get("personal_name"))
-							.map(JsonElement::toString).orElse(""));
+							.map(JsonElement::getAsString).orElse(""));
 					authorRepository.save(author);
 				} catch (Exception ex) {
 					ex.printStackTrace();
